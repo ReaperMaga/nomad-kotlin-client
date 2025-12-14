@@ -1,0 +1,81 @@
+package dev.reapermaga.nomad.jobs
+
+import dev.reapermaga.nomad.jobs.http.NomadCreateJobRequest
+import dev.reapermaga.nomad.jobs.http.NomadCreateJobTask
+import dev.reapermaga.nomad.jobs.http.NomadCreateJobTaskGroup
+import kotlinx.serialization.json.JsonElement
+import java.util.*
+
+class NomadJobBuilder {
+
+    var id: String = UUID.randomUUID().toString()
+    var datacenters = listOf<String>()
+    private var taskGroups: List<NomadJobBuilderTaskGroup> = listOf()
+
+    fun groups(groups: List<NomadJobBuilderTaskGroup>) {
+        this.taskGroups = groups
+    }
+
+    fun group(init: NomadJobBuilderTaskGroup.() -> Unit) {
+        val group = NomadJobBuilderTaskGroup().apply(init)
+        this.taskGroups += group
+    }
+
+    fun build(): NomadCreateJobRequest {
+        val job = dev.reapermaga.nomad.jobs.http.NomadCreateJob(
+            id = this.id,
+            datacenters = this.datacenters,
+            taskGroups = this.taskGroups.map { group ->
+                NomadCreateJobTaskGroup(
+                    name = group.name,
+                    tasks = group.tasks.map { task ->
+                        NomadCreateJobTask(
+                            name = task.name,
+                            driver = task.driver,
+                            config = task.config
+                        )
+                    }
+                )
+            }
+        )
+        return NomadCreateJobRequest(job)
+    }
+
+}
+
+class NomadJobBuilderTaskGroup {
+    var name: String = "default"
+    var tasks = listOf<NomadJobBuilderTask>()
+
+    fun tasks(tasks: List<NomadJobBuilderTask>) {
+        this.tasks = tasks
+    }
+
+    fun task(init: NomadJobBuilderTask.() -> Unit) {
+        val task = NomadJobBuilderTask().apply(init)
+        this.tasks += task
+    }
+}
+
+class NomadJobBuilderTask {
+    var name: String = "default-task"
+    var driver: String = "docker"
+    var config: Map<String, Any> = mapOf()
+
+    fun config(vararg pairs: Pair<String, Any>) {
+        this.config = mapOf(*pairs)
+    }
+
+    fun docker(init: NomadJobBuilderTaskDocker.() -> Unit) {
+        driver = "docker"
+        val dockerConfig = NomadJobBuilderTaskDocker().apply(init)
+        config(
+            "image" to (dockerConfig.image ?: error("Docker image must be specified"))
+        )
+    }
+}
+
+class NomadJobBuilderTaskDocker {
+    var image: String? = null
+
+}
