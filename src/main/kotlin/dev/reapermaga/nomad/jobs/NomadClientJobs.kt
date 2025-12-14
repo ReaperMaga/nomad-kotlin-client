@@ -3,6 +3,7 @@ package dev.reapermaga.nomad.jobs
 import dev.reapermaga.nomad.NomadClient
 import dev.reapermaga.nomad.jobs.http.NomadCreateJobResponse
 import dev.reapermaga.nomad.jobs.http.NomadListJobsRequest
+import dev.reapermaga.nomad.jobs.http.NomadReadJobResponse
 import dev.reapermaga.nomad.json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
@@ -37,7 +38,19 @@ class NomadClientJobs(val client: NomadClient) {
             }
             return json.decodeFromString<NomadCreateJobResponse>(it.body.string())
         }
+    }
 
+    suspend fun read(jobId: String): NomadReadJobResponse {
+        val request = Request.Builder()
+            .url("${client.baseUrl}/job/$jobId")
+            .get()
+            .build()
+        client.httpClient.newCall(request).executeAsync().use {
+            if (!it.isSuccessful) {
+                error("Request failed with status code ${it.code}")
+            }
+            return json.decodeFromString<NomadReadJobResponse>(it.body.string())
+        }
     }
 }
 

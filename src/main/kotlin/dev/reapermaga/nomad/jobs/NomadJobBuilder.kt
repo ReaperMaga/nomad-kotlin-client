@@ -3,7 +3,7 @@ package dev.reapermaga.nomad.jobs
 import dev.reapermaga.nomad.jobs.http.NomadCreateJobRequest
 import dev.reapermaga.nomad.jobs.http.NomadCreateJobTask
 import dev.reapermaga.nomad.jobs.http.NomadCreateJobTaskGroup
-import dev.reapermaga.nomad.jobs.http.NomadCreateJobTaskResources
+import dev.reapermaga.nomad.jobs.http.NomadJobTaskResources
 import java.util.*
 
 class NomadJobBuilder {
@@ -34,7 +34,7 @@ class NomadJobBuilder {
                             driver = task.driver,
                             config = task.config,
                             resources = task.resources?.let { res ->
-                                NomadCreateJobTaskResources(
+                                NomadJobTaskResources(
                                     cpu = res.cpu,
                                     memory = res.memory,
                                 )
