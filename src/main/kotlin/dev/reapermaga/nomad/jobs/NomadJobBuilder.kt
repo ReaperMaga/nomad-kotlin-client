@@ -3,7 +3,7 @@ package dev.reapermaga.nomad.jobs
 import dev.reapermaga.nomad.jobs.http.NomadCreateJobRequest
 import dev.reapermaga.nomad.jobs.http.NomadCreateJobTask
 import dev.reapermaga.nomad.jobs.http.NomadCreateJobTaskGroup
-import kotlinx.serialization.json.JsonElement
+import dev.reapermaga.nomad.jobs.http.NomadCreateJobTaskResources
 import java.util.*
 
 class NomadJobBuilder {
@@ -32,9 +32,15 @@ class NomadJobBuilder {
                         NomadCreateJobTask(
                             name = task.name,
                             driver = task.driver,
-                            config = task.config
+                            config = task.config,
+                            resources = task.resources?.let { res ->
+                                NomadCreateJobTaskResources(
+                                    cpu = res.cpu,
+                                    memory = res.memory,
+                                )
+                            },
                         )
-                    }
+                    },
                 )
             }
         )
@@ -62,8 +68,14 @@ class NomadJobBuilderTask {
     var driver: String = "docker"
     var config: Map<String, Any> = mapOf()
 
+    var resources: NomadJobBuilderTaskResources? = null
+
     fun config(vararg pairs: Pair<String, Any>) {
         this.config = mapOf(*pairs)
+    }
+
+    fun resources(init: NomadJobBuilderTaskResources.() -> Unit) {
+        this.resources = NomadJobBuilderTaskResources().apply(init)
     }
 
     fun docker(init: NomadJobBuilderTaskDocker.() -> Unit) {
@@ -73,6 +85,11 @@ class NomadJobBuilderTask {
             "image" to (dockerConfig.image ?: error("Docker image must be specified"))
         )
     }
+}
+
+class NomadJobBuilderTaskResources {
+    var cpu: Int? = null
+    var memory: Int? = null
 }
 
 class NomadJobBuilderTaskDocker {

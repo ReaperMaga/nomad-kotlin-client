@@ -1,7 +1,6 @@
 package dev.reapermaga.nomad.jobs.http
 
 import dev.reapermaga.nomad.util.AnySerializer
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -35,8 +34,18 @@ data class NomadCreateJobTask(
     val name: String,
     @SerialName("Driver")
     val driver: String,
+    @SerialName("Resources")
+    val resources: NomadCreateJobTaskResources? = null,
     @SerialName("Config")
     val config: Map<String, @Serializable(with = AnySerializer::class) Any>,
+)
+
+@Serializable
+data class NomadCreateJobTaskResources(
+    @SerialName("CPU")
+    val cpu: Int? = null,
+    @SerialName("MemoryMB")
+    val memory: Int? = null,
 )
 
 

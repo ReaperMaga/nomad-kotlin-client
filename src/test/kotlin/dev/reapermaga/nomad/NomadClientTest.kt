@@ -28,6 +28,10 @@ class NomadClientTest : StringSpec({
                 name = "example-group"
                 task {
                     name = "example-task"
+                    resources {
+                        cpu = 2000
+                        memory = 512
+                    }
                     docker {
                         image = "redis:latest"
                     }
