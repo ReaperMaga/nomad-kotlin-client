@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.types.beInstanceOf
+import kotlinx.coroutines.delay
 import java.util.UUID
 
 val client = NomadClient()
@@ -44,12 +45,21 @@ class NomadClientTest : StringSpec({
         val job = client.jobs.read(createdJob)
         println("Job: $job")
     }
+    "list job allocations" {
+        val createdJobId = createExampleJob("test")
+        var allocations = client.jobs.listAllocations(createdJobId)
+        while (allocations.isNotEmpty() && allocations.first().clientStatus == "pending") {
+            println("Waiting for allocation to be running...")
+            delay(1000)
+            allocations = client.jobs.listAllocations(createdJobId)
+        }
+        println("Job: $allocations")
+    }
 })
 
-private suspend fun createExampleJob(): String {
-    val generatedId = UUID.randomUUID().toString()
+private suspend fun createExampleJob(jobId: String = UUID.randomUUID().toString()): String {
     client.jobs.create {
-        id = generatedId
+        id = jobId
         datacenters = listOf("dc1")
         group {
             name = "example-group"
@@ -65,5 +75,5 @@ private suspend fun createExampleJob(): String {
             }
         }
     }
-    return generatedId
+    return jobId
 }

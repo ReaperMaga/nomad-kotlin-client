@@ -2,6 +2,7 @@ package dev.reapermaga.nomad.jobs
 
 import dev.reapermaga.nomad.NomadClient
 import dev.reapermaga.nomad.jobs.http.NomadCreateJobResponse
+import dev.reapermaga.nomad.jobs.http.NomadJobAllocation
 import dev.reapermaga.nomad.jobs.http.NomadListJobsRequest
 import dev.reapermaga.nomad.jobs.http.NomadReadJobResponse
 import dev.reapermaga.nomad.json
@@ -50,6 +51,19 @@ class NomadClientJobs(val client: NomadClient) {
                 error("Request failed with status code ${it.code}")
             }
             return json.decodeFromString<NomadReadJobResponse>(it.body.string())
+        }
+    }
+
+    suspend fun listAllocations(jobId: String): List<NomadJobAllocation> {
+        val request = Request.Builder()
+            .url("${client.baseUrl}/job/${jobId}/allocations")
+            .get()
+            .build()
+        client.httpClient.newCall(request).executeAsync().use {
+            if (!it.isSuccessful) {
+                error("Request failed with status code ${it.code}")
+            }
+            return json.decodeFromString<List<NomadJobAllocation>>(it.body.string())
         }
     }
 }
