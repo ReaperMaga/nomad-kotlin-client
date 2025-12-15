@@ -1,6 +1,7 @@
 package dev.reapermaga.nomad
 
 import dev.reapermaga.nomad.jobs.NomadClientJobs
+import dev.reapermaga.nomad.nodes.NomadClientNodes
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -21,6 +22,7 @@ class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
             ?: error("address can't be empty")
 
     val jobs = NomadClientJobs(this)
+    val nodes = NomadClientNodes(this)
 
     suspend fun statusLeader(): String {
         val request = Request.Builder()

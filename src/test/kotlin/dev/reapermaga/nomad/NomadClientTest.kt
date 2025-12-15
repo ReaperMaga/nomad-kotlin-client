@@ -6,7 +6,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.types.beInstanceOf
 import kotlinx.coroutines.delay
-import java.util.UUID
+import java.util.*
 
 val client = NomadClient()
 
@@ -54,6 +54,10 @@ class NomadClientTest : StringSpec({
             allocations = client.jobs.listAllocations(createdJobId)
         }
         println("Job: $allocations")
+    }
+    "list nodes" {
+        val nodes = client.nodes.list()
+        println("Nodes: $nodes")
     }
 })
 
