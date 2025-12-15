@@ -41,12 +41,13 @@ class NomadClientJobs(val client: NomadClient) {
         }
     }
 
-    suspend fun read(jobId: String): NomadReadJobResponse {
+    suspend fun read(jobId: String): NomadReadJobResponse? {
         val request = Request.Builder()
             .url("${client.baseUrl}/job/$jobId")
             .get()
             .build()
         client.httpClient.newCall(request).executeAsync().use {
+            if (it.code == 404) return null
             if (!it.isSuccessful) {
                 error("Request failed with status code ${it.code}")
             }

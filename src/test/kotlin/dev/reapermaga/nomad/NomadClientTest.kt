@@ -3,6 +3,7 @@ package dev.reapermaga.nomad
 import dev.reapermaga.nomad.jobs.http.NomadListJobsRequest
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.contain
 import io.kotest.matchers.types.beInstanceOf
 import kotlinx.coroutines.delay
@@ -44,6 +45,10 @@ class NomadClientTest : StringSpec({
         val createdJob = createExampleJob()
         val job = client.jobs.read(createdJob)
         println("Job: $job")
+    }
+    "read job null" {
+        val job = client.jobs.read("non-existent-job-id")
+        job shouldBe null
     }
     "list job allocations" {
         val createdJobId = createExampleJob("test")
