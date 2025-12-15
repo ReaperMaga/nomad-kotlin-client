@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.plugin.extraProperties
 
 plugins {
-    kotlin("jvm") version "2.3.0-RC"
+    kotlin("jvm") version "2.2.21"
     kotlin("plugin.serialization") version "2.3.0-RC"
     id("io.kotest") version "6.0.7"
     id("org.jetbrains.dokka") version "2.1.0"
@@ -24,7 +24,6 @@ dependencies {
     testImplementation("io.kotest:kotest-framework-engine:$kotestVersion")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation(kotlin("test"))
-
 }
 
 tasks.test {
