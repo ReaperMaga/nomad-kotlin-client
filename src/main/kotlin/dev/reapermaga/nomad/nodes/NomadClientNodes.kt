@@ -20,5 +20,19 @@ class NomadClientNodes(val client: NomadClient) {
             return json.decodeFromString<List<NomadNode>>(it.body.string())
         }
     }
+
+    suspend fun read(nodeId: String): NomadNode? {
+        val request = Request.Builder()
+            .url("${client.baseUrl}/node/$nodeId")
+            .get()
+            .build()
+        client.httpClient.newCall(request).executeAsync().use {
+            if (it.code == 404) return null
+            if (!it.isSuccessful) {
+                error("Request failed with status code ${it.code}")
+            }
+            return json.decodeFromString<NomadNode>(it.body.string())
+        }
+    }
 }
 

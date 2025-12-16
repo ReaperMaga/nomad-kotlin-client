@@ -2,6 +2,7 @@ package dev.reapermaga.nomad
 
 import dev.reapermaga.nomad.jobs.http.NomadListJobsRequest
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.ints.beGreaterThan
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.contain
@@ -62,7 +63,11 @@ class NomadClientTest : StringSpec({
     }
     "list nodes" {
         val nodes = client.nodes.list()
-        println("Nodes: $nodes")
+        nodes.size should beGreaterThan(0)
+    }
+    "read node" {
+        val node = client.nodes.read("f8bb2185-c7ea-e7de-2db0-00f3c5264c86")
+        println("Nodes: $node")
     }
 })
 
