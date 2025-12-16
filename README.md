@@ -112,8 +112,7 @@ See `src/test/kotlin/.../NomadClientTest.kt` for more examples: reading a job, p
 
 ## Documentation
 
-- API docs are published as a Javadoc (Dokka HTML) artifact alongside the library.
-- To generate docs locally: run `./gradlew dokkaHtml` and open `build/dokka/html/index.html`.
+- Documentation and API reference: https://reapermaga.github.io/nomad-kotlin-client/
 
 ## Notes
 

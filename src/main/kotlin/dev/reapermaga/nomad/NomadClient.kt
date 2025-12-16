@@ -9,13 +9,14 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.coroutines.executeAsync
 
-val json = Json {
-    ignoreUnknownKeys = true
-}
 
 class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
 
     private val config = NomadClientConfig().apply(initConfig)
+
+    val json = Json {
+        ignoreUnknownKeys = true
+    }
 
     val httpClient = OkHttpClient.Builder().build()
 
