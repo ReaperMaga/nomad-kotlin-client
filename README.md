@@ -73,7 +73,7 @@ Add the repository and dependency to your `pom.xml`:
 
 ```kotlin
 suspend fun main() {
-    val client = dev.reapermaga.nomad.NomadClient {
+    val client = NomadClient {
         address = "http://localhost:4646"   // Nomad HTTP API base
         // token = "..."                     // optional ACL token if needed
         // clientVersion = NomadClientVersion.V1
