@@ -1,9 +1,9 @@
 package dev.reapermaga.nomad.jobs
 
-import dev.reapermaga.nomad.jobs.http.NomadCreateJobRequest
-import dev.reapermaga.nomad.jobs.http.NomadCreateJobTask
-import dev.reapermaga.nomad.jobs.http.NomadCreateJobTaskGroup
-import dev.reapermaga.nomad.jobs.http.NomadJobTaskResources
+import dev.reapermaga.nomad.jobs.data.NomadCreateJobRequest
+import dev.reapermaga.nomad.jobs.data.NomadCreateJobTask
+import dev.reapermaga.nomad.jobs.data.NomadCreateJobTaskGroup
+import dev.reapermaga.nomad.jobs.data.NomadJobTaskResources
 import java.util.*
 
 class NomadJobBuilder {
@@ -22,7 +22,7 @@ class NomadJobBuilder {
     }
 
     fun build(): NomadCreateJobRequest {
-        val job = dev.reapermaga.nomad.jobs.http.NomadCreateJob(
+        val job = dev.reapermaga.nomad.jobs.data.NomadCreateJob(
             id = this.id,
             datacenters = this.datacenters,
             taskGroups = this.taskGroups.map { group ->

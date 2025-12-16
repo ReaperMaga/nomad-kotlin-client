@@ -1,4 +1,4 @@
-package dev.reapermaga.nomad.nodes.http
+package dev.reapermaga.nomad.nodes.data
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

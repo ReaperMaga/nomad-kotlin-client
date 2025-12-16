@@ -1,11 +1,11 @@
-package dev.reapermaga.nomad.jobs.http
+package dev.reapermaga.nomad.jobs.data
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class NomadReadJobResponse(
+data class NomadJob(
     @SerialName("ID")
     val id: String,
     @SerialName("Name")
@@ -16,22 +16,24 @@ data class NomadReadJobResponse(
     val datacenters: List<String>,
     @SerialName("Status")
     val status: String,
+    @SerialName("Type")
+    val type: String,
     @SerialName("StatusDescription")
     val statusDescription: String,
     @SerialName("TaskGroups")
-    val taskGroups: List<NomadReadJobTaskGroup>,
+    val taskGroups: List<NomadJobTaskGroup>? = null,
 )
 
 @Serializable
-data class NomadReadJobTaskGroup(
+data class NomadJobTaskGroup(
     @SerialName("Name")
     val name: String,
     @SerialName("Tasks")
-    val tasks: List<NomadReadJobTask>,
+    val tasks: List<NomadJobTask>,
 )
 
 @Serializable
-data class NomadReadJobTask(
+data class NomadJobTask(
     @SerialName("Name")
     val name: String,
     @SerialName("Driver")
