@@ -26,6 +26,8 @@ jobs:
         run: chmod +x ./gradlew
       - name: Generate Dokka HTML
         run: ./gradlew dokkaGenerateHtml
+        env:
+          BUILD_VERSION: ${{ github.ref_name }}
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
