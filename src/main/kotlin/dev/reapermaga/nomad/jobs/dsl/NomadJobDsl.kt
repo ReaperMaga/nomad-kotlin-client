@@ -13,8 +13,8 @@ class NomadJobDsl {
         this.taskGroups = groups
     }
 
-    fun group(init: NomadJobTaskGroupDsl.() -> Unit) {
-        val group = NomadJobTaskGroupDsl().apply(init)
+    fun group(dsl: NomadJobTaskGroupDsl.() -> Unit) {
+        val group = NomadJobTaskGroupDsl().apply(dsl)
         this.taskGroups += group
     }
 
