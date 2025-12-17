@@ -2,6 +2,7 @@ package dev.reapermaga.nomad
 
 import dev.reapermaga.nomad.jobs.NomadClientJobs
 import dev.reapermaga.nomad.nodes.NomadClientNodes
+import dev.reapermaga.nomad.status.NomadClientStatus
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -26,6 +27,7 @@ class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
 
     val jobs = NomadClientJobs(this)
     val nodes = NomadClientNodes(this)
+    val status = NomadClientStatus(this)
 
     suspend inline fun <reified T> requestGet(url: String): T? {
         val request = Request.Builder()
@@ -66,11 +68,6 @@ class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
             return json.decodeFromString(it.body.string())
         }
     }
-
-    suspend fun statusLeader(): String {
-        return requestGet("/status/leader") ?: error("Failed to fetch leader status")
-    }
-
 }
 
 
