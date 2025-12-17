@@ -14,9 +14,13 @@ import java.util.*
 val client = NomadClient()
 
 class NomadClientTest : StringSpec({
-    "statusLeader should return leader address" {
-        val leader = client.statusLeader()
+    "status leader should return leader address" {
+        val leader = client.status.leader()
         leader should contain(":4647")
+    }
+    "status peers should return peers" {
+        val peers = client.status.peers()
+        peers shouldBe listOf("127.0.0.1:4647")
     }
     "listJob should return list of jobs" {
         createExampleJob()
