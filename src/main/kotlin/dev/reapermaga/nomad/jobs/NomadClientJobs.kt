@@ -5,6 +5,7 @@ import dev.reapermaga.nomad.jobs.data.NomadCreateJobResponse
 import dev.reapermaga.nomad.jobs.data.NomadJob
 import dev.reapermaga.nomad.jobs.data.NomadJobAllocation
 import dev.reapermaga.nomad.jobs.data.NomadStopJob
+import dev.reapermaga.nomad.jobs.dsl.NomadJobDsl
 
 class NomadClientJobs(val client: NomadClient) {
 
@@ -12,8 +13,8 @@ class NomadClientJobs(val client: NomadClient) {
         return client.requestGet("/jobs") ?: error("Failed to fetch jobs")
     }
 
-    suspend fun create(builder: NomadJobBuilder.() -> Unit): NomadCreateJobResponse {
-        val jobCreateRequest = NomadJobBuilder().apply(builder).build()
+    suspend fun create(dsl: NomadJobDsl.() -> Unit): NomadCreateJobResponse {
+        val jobCreateRequest = NomadJobDsl().apply(dsl).build()
         return client.requestPost("/jobs", jobCreateRequest)
     }
 

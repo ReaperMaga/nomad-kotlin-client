@@ -1,28 +1,25 @@
-package dev.reapermaga.nomad.jobs
+package dev.reapermaga.nomad.jobs.dsl
 
-import dev.reapermaga.nomad.jobs.data.NomadCreateJobRequest
-import dev.reapermaga.nomad.jobs.data.NomadCreateJobTask
-import dev.reapermaga.nomad.jobs.data.NomadCreateJobTaskGroup
-import dev.reapermaga.nomad.jobs.data.NomadJobTaskResources
+import dev.reapermaga.nomad.jobs.data.*
 import java.util.*
 
-class NomadJobBuilder {
+class NomadJobDsl {
 
     var id: String = UUID.randomUUID().toString()
     var datacenters = listOf<String>()
-    private var taskGroups: List<NomadJobBuilderTaskGroup> = listOf()
+    private var taskGroups: List<NomadJobTaskGroupDsl> = listOf()
 
-    fun groups(groups: List<NomadJobBuilderTaskGroup>) {
+    fun groups(groups: List<NomadJobTaskGroupDsl>) {
         this.taskGroups = groups
     }
 
-    fun group(init: NomadJobBuilderTaskGroup.() -> Unit) {
-        val group = NomadJobBuilderTaskGroup().apply(init)
+    fun group(init: NomadJobTaskGroupDsl.() -> Unit) {
+        val group = NomadJobTaskGroupDsl().apply(init)
         this.taskGroups += group
     }
 
     fun build(): NomadCreateJobRequest {
-        val job = dev.reapermaga.nomad.jobs.data.NomadCreateJob(
+        val job = NomadCreateJob(
             id = this.id,
             datacenters = this.datacenters,
             taskGroups = this.taskGroups.map { group ->
@@ -49,50 +46,50 @@ class NomadJobBuilder {
 
 }
 
-class NomadJobBuilderTaskGroup {
+class NomadJobTaskGroupDsl {
     var name: String = "default"
-    var tasks = listOf<NomadJobBuilderTask>()
+    var tasks = listOf<NomadJobTaskDsl>()
 
-    fun tasks(tasks: List<NomadJobBuilderTask>) {
+    fun tasks(tasks: List<NomadJobTaskDsl>) {
         this.tasks = tasks
     }
 
-    fun task(init: NomadJobBuilderTask.() -> Unit) {
-        val task = NomadJobBuilderTask().apply(init)
+    fun task(dsl: NomadJobTaskDsl.() -> Unit) {
+        val task = NomadJobTaskDsl().apply(dsl)
         this.tasks += task
     }
 }
 
-class NomadJobBuilderTask {
+class NomadJobTaskDsl {
     var name: String = "default-task"
     var driver: String = "docker"
     var config: Map<String, Any> = mapOf()
 
-    var resources: NomadJobBuilderTaskResources? = null
+    var resources: NomadJobTaskResourcesDsl? = null
 
     fun config(vararg pairs: Pair<String, Any>) {
         this.config = mapOf(*pairs)
     }
 
-    fun resources(init: NomadJobBuilderTaskResources.() -> Unit) {
-        this.resources = NomadJobBuilderTaskResources().apply(init)
+    fun resources(dsl: NomadJobTaskResourcesDsl.() -> Unit) {
+        this.resources = NomadJobTaskResourcesDsl().apply(dsl)
     }
 
-    fun docker(init: NomadJobBuilderTaskDocker.() -> Unit) {
+    fun docker(dsl: NomadJobTaskDockerDsl.() -> Unit) {
         driver = "docker"
-        val dockerConfig = NomadJobBuilderTaskDocker().apply(init)
+        val dockerConfig = NomadJobTaskDockerDsl().apply(dsl)
         config(
             "image" to (dockerConfig.image ?: error("Docker image must be specified"))
         )
     }
 }
 
-class NomadJobBuilderTaskResources {
+class NomadJobTaskResourcesDsl {
     var cpu: Int? = null
     var memory: Int? = null
 }
 
-class NomadJobBuilderTaskDocker {
+class NomadJobTaskDockerDsl {
     var image: String? = null
 
 }
