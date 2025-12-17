@@ -54,6 +54,19 @@ class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
         }
     }
 
+    suspend inline fun <reified T> requestDelete(url: String): T {
+        val request = Request.Builder()
+            .url("${baseUrl}$url")
+            .delete()
+            .build()
+        httpClient.newCall(request).executeAsync().use {
+            if (!it.isSuccessful) {
+                error("Request failed with status code ${it.code}")
+            }
+            return json.decodeFromString(it.body.string())
+        }
+    }
+
     suspend fun statusLeader(): String {
         return requestGet("/status/leader") ?: error("Failed to fetch leader status")
     }

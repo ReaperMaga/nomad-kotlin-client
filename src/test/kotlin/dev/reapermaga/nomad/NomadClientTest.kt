@@ -67,6 +67,16 @@ class NomadClientTest : StringSpec({
             allocations.size shouldBe beGreaterThan(1)
         }
     }
+    "stop job" {
+        val createdJobId = createExampleJob()
+        val stopResponse = client.jobs.stop(createdJobId)
+        stopResponse.evalId.shouldNotBeNull()
+    }
+    "purge job" {
+        val createdJobId = createExampleJob()
+        val purgeResponse = client.jobs.purge(createdJobId)
+        println(purgeResponse)
+    }
     "list nodes" {
         val nodes = client.nodes.list()
         nodes.size should beGreaterThan(0)

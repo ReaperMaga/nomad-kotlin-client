@@ -4,6 +4,7 @@ import dev.reapermaga.nomad.NomadClient
 import dev.reapermaga.nomad.jobs.data.NomadCreateJobResponse
 import dev.reapermaga.nomad.jobs.data.NomadJob
 import dev.reapermaga.nomad.jobs.data.NomadJobAllocation
+import dev.reapermaga.nomad.jobs.data.NomadStopJob
 
 class NomadClientJobs(val client: NomadClient) {
 
@@ -18,6 +19,14 @@ class NomadClientJobs(val client: NomadClient) {
 
     suspend fun read(jobId: String): NomadJob? {
         return client.requestGet("/job/$jobId")
+    }
+
+    suspend fun stop(jobId: String): NomadStopJob {
+        return client.requestDelete("/job/$jobId")
+    }
+
+    suspend fun purge(jobId: String): NomadStopJob {
+        return client.requestDelete("/job/$jobId?purge=true")
     }
 
     suspend fun listAllocations(jobId: String): List<NomadJobAllocation> {
