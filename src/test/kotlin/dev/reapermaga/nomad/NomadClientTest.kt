@@ -31,9 +31,17 @@ class NomadClientTest : StringSpec({
     "create job" {
         val job = client.jobs.create {
             id = "example-job"
+            type = "batch"
             datacenters = listOf("dc1")
             group {
                 name = "example-group"
+                network {
+                    dynamicPort {
+                        label = "redis"
+                        value = 6379
+                        to = 6379
+                    }
+                }
                 task {
                     name = "example-task"
                     resources {
@@ -42,7 +50,11 @@ class NomadClientTest : StringSpec({
                     }
                     docker {
                         image = "redis:latest"
+                        ports = listOf("redis")
                     }
+                    environment = mapOf(
+                        "EXAMPLE_ENV" to $$"${NOMAD_PORT_http}"
+                    )
                 }
             }
         }

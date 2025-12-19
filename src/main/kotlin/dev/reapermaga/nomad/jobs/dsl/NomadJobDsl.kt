@@ -27,11 +27,35 @@ class NomadJobDsl {
             taskGroups = this.taskGroups.map { group ->
                 NomadCreateJobTaskGroup(
                     name = group.name,
+                    networks = group.networks.map { network ->
+                        NomadCreateJobTaskGroupNetwork(
+                            mode = network.mode,
+                            dynamicPorts = network.dynamicPorts.map { port ->
+                                NomadCreateJobTaskGroupNetworkPort(
+                                    label = port.label,
+                                    value = port.value,
+                                    to = port.to,
+                                    hostNetwork = port.hostNetwork,
+                                    ignoreCollision = port.ignoreCollision,
+                                )
+                            },
+                            reservedPorts = network.reservedPorts.map { port ->
+                                NomadCreateJobTaskGroupNetworkPort(
+                                    label = port.label,
+                                    value = port.value,
+                                    to = port.to,
+                                    hostNetwork = port.hostNetwork,
+                                    ignoreCollision = port.ignoreCollision,
+                                )
+                            },
+                        )
+                    },
                     tasks = group.tasks.map { task ->
                         NomadCreateJobTask(
                             name = task.name,
                             driver = task.driver,
                             config = task.config,
+                            env = task.environment,
                             resources = task.resources?.let { res ->
                                 NomadJobTaskResources(
                                     cpu = res.cpu,
@@ -45,12 +69,19 @@ class NomadJobDsl {
         )
         return NomadCreateJobRequest(job)
     }
-
 }
+
 
 class NomadJobTaskGroupDsl {
     var name: String = "default"
     var tasks = listOf<NomadJobTaskDsl>()
+
+    var networks: List<NomadJobTasKGroupNetworkDsl> = listOf()
+
+    fun network(dsl: NomadJobTasKGroupNetworkDsl.() -> Unit) {
+        val network = NomadJobTasKGroupNetworkDsl().apply(dsl)
+        this.networks += network
+    }
 
     fun tasks(tasks: List<NomadJobTaskDsl>) {
         this.tasks = tasks
@@ -67,10 +98,12 @@ class NomadJobTaskDsl {
     var driver: String = "docker"
     var config: Map<String, Any> = mapOf()
 
+    var environment: Map<String, String> = mapOf()
+
     var resources: NomadJobTaskResourcesDsl? = null
 
     fun config(vararg pairs: Pair<String, Any>) {
-        this.config = mapOf(*pairs)
+        this.config += mapOf(*pairs)
     }
 
     fun resources(dsl: NomadJobTaskResourcesDsl.() -> Unit) {
@@ -81,7 +114,9 @@ class NomadJobTaskDsl {
         driver = "docker"
         val dockerConfig = NomadJobTaskDockerDsl().apply(dsl)
         config(
-            "image" to (dockerConfig.image ?: error("Docker image must be specified"))
+            "image" to (dockerConfig.image ?: error("Docker image must be specified")),
+            "ports" to dockerConfig.ports,
+            // "network_mode" to "host",
         )
     }
 }
@@ -94,4 +129,31 @@ class NomadJobTaskResourcesDsl {
 class NomadJobTaskDockerDsl {
     var image: String? = null
 
+    var ports = listOf<String>()
+
+}
+
+class NomadJobTasKGroupNetworkDsl {
+    var mode: String? = null
+    var dynamicPorts = listOf<NomadJobTaskGroupNetworkPortDsl>()
+    var reservedPorts = listOf<NomadJobTaskGroupNetworkPortDsl>()
+
+
+    fun dynamicPort(dsl: NomadJobTaskGroupNetworkPortDsl.() -> Unit) {
+        val port = NomadJobTaskGroupNetworkPortDsl().apply(dsl)
+        this.dynamicPorts += port
+    }
+
+    fun reservedPort(dsl: NomadJobTaskGroupNetworkPortDsl.() -> Unit) {
+        val port = NomadJobTaskGroupNetworkPortDsl().apply(dsl)
+        this.reservedPorts += port
+    }
+}
+
+class NomadJobTaskGroupNetworkPortDsl {
+    var label: String = "http"
+    var value: Int? = null
+    var to: Int? = null
+    var hostNetwork: String? = null
+    var ignoreCollision: Boolean? = null
 }
