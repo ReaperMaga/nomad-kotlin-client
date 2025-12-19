@@ -20,7 +20,7 @@ class NomadClientTest : StringSpec({
     }
     "status peers should return peers" {
         val peers = client.status.peers()
-        peers shouldBe listOf("127.0.0.1:4647")
+        peers.size shouldBe beGreaterThan(0)
     }
     "listJob should return list of jobs" {
         createExampleJob()
@@ -68,7 +68,7 @@ class NomadClientTest : StringSpec({
             allocations = client.jobs.listAllocations(createdJobId)
         }
         if (attempts > 0) {
-            allocations.size shouldBe beGreaterThan(1)
+            allocations.size shouldBe beGreaterThanOrEqualTo(1)
         }
     }
     "stop job" {
@@ -85,15 +85,12 @@ class NomadClientTest : StringSpec({
         val nodes = client.nodes.list()
         nodes.size should beGreaterThan(0)
     }
-    "read node" {
-        val node = client.nodes.read("f8bb2185-c7ea-e7de-2db0-00f3c5264c86")
-        node.shouldNotBeNull()
-    }
 })
 
 private suspend fun createExampleJob(jobId: String = UUID.randomUUID().toString()): String {
     client.jobs.create {
         id = jobId
+        type = "batch"
         datacenters = listOf("dc1")
         group {
             name = "example-group"

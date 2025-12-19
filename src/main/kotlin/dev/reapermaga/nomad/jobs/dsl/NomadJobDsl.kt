@@ -6,6 +6,7 @@ import java.util.*
 class NomadJobDsl {
 
     var id: String = UUID.randomUUID().toString()
+    var type = "service"
     var datacenters = listOf<String>()
     private var taskGroups: List<NomadJobTaskGroupDsl> = listOf()
 
@@ -21,6 +22,7 @@ class NomadJobDsl {
     fun build(): NomadCreateJobRequest {
         val job = NomadCreateJob(
             id = this.id,
+            type = this.type,
             datacenters = this.datacenters,
             taskGroups = this.taskGroups.map { group ->
                 NomadCreateJobTaskGroup(

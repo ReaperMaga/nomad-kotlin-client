@@ -37,7 +37,7 @@ class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
         httpClient.newCall(request).executeAsync().use {
             if (it.code == 404) return null
             if (!it.isSuccessful) {
-                error("Request failed with status code ${it.code}")
+                error("Request failed with status code ${it.code}: ${it.message}")
             }
             return json.decodeFromString(it.body.string())
         }
@@ -50,7 +50,7 @@ class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
             .build()
         httpClient.newCall(request).executeAsync().use {
             if (!it.isSuccessful) {
-                error("Request failed with status code ${it.code}")
+                error("Request failed with status code ${it.code}: ${it.message}")
             }
             return json.decodeFromString(it.body.string())
         }
@@ -63,7 +63,7 @@ class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
             .build()
         httpClient.newCall(request).executeAsync().use {
             if (!it.isSuccessful) {
-                error("Request failed with status code ${it.code}")
+                error("Request failed with status code ${it.code}: ${it.message}")
             }
             return json.decodeFromString(it.body.string())
         }
