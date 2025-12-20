@@ -1,5 +1,6 @@
 package dev.reapermaga.nomad.jobs.data
 
+import dev.reapermaga.nomad.common.NomadResources
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -39,5 +40,5 @@ data class NomadJobTask(
     @SerialName("Driver")
     val driver: String,
     @SerialName("Resources")
-    val resources: NomadJobTaskResources? = null,
+    val resources: NomadResources? = null,
 )

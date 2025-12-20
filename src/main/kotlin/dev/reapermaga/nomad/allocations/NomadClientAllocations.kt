@@ -1,6 +1,7 @@
 package dev.reapermaga.nomad.allocations
 
 import dev.reapermaga.nomad.NomadClient
+import dev.reapermaga.nomad.allocations.data.NomadAllocation
 
 class NomadClientAllocations(val client: NomadClient) {
 

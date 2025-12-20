@@ -1,6 +1,12 @@
 package dev.reapermaga.nomad.jobs.dsl
 
-import dev.reapermaga.nomad.jobs.data.*
+import dev.reapermaga.nomad.common.NomadNetwork
+import dev.reapermaga.nomad.common.NomadPort
+import dev.reapermaga.nomad.common.NomadResources
+import dev.reapermaga.nomad.jobs.data.NomadCreateJob
+import dev.reapermaga.nomad.jobs.data.NomadCreateJobRequest
+import dev.reapermaga.nomad.jobs.data.NomadCreateJobTask
+import dev.reapermaga.nomad.jobs.data.NomadCreateJobTaskGroup
 import java.util.*
 
 class NomadJobDsl {
@@ -28,10 +34,10 @@ class NomadJobDsl {
                 NomadCreateJobTaskGroup(
                     name = group.name,
                     networks = group.networks.map { network ->
-                        NomadCreateJobTaskGroupNetwork(
+                        NomadNetwork(
                             mode = network.mode,
                             dynamicPorts = network.dynamicPorts.map { port ->
-                                NomadCreateJobTaskGroupNetworkPort(
+                                NomadPort(
                                     label = port.label,
                                     value = port.value,
                                     to = port.to,
@@ -40,7 +46,7 @@ class NomadJobDsl {
                                 )
                             },
                             reservedPorts = network.reservedPorts.map { port ->
-                                NomadCreateJobTaskGroupNetworkPort(
+                                NomadPort(
                                     label = port.label,
                                     value = port.value,
                                     to = port.to,
@@ -57,7 +63,7 @@ class NomadJobDsl {
                             config = task.config,
                             env = task.environment,
                             resources = task.resources?.let { res ->
-                                NomadJobTaskResources(
+                                NomadResources(
                                     cpu = res.cpu,
                                     memory = res.memory,
                                 )
@@ -96,14 +102,16 @@ class NomadJobTaskGroupDsl {
 class NomadJobTaskDsl {
     var name: String = "default-task"
     var driver: String = "docker"
-    var config: Map<String, Any> = mapOf()
+    var config: MutableMap<String, Any> = mutableMapOf()
 
     var environment: Map<String, String> = mapOf()
 
     var resources: NomadJobTaskResourcesDsl? = null
 
     fun config(vararg pairs: Pair<String, Any>) {
-        this.config += mapOf(*pairs)
+        for (pair in pairs) {
+            this.config[pair.first] = pair.second
+        }
     }
 
     fun resources(dsl: NomadJobTaskResourcesDsl.() -> Unit) {
@@ -116,8 +124,10 @@ class NomadJobTaskDsl {
         config(
             "image" to (dockerConfig.image ?: error("Docker image must be specified")),
             "ports" to dockerConfig.ports,
-            // "network_mode" to "host",
         )
+        dockerConfig.networkMode?.let {
+            config("network_mode" to it)
+        }
     }
 }
 
@@ -131,6 +141,7 @@ class NomadJobTaskDockerDsl {
 
     var ports = listOf<String>()
 
+    var networkMode: String? = null
 }
 
 class NomadJobTasKGroupNetworkDsl {

@@ -130,6 +130,13 @@ private suspend fun createExampleJob(jobId: String = UUID.randomUUID().toString(
         datacenters = listOf("dc1")
         group {
             name = "example-group"
+            network {
+                dynamicPort {
+                    label = "redis"
+                    value = 6379
+                    to = 6379
+                }
+            }
             task {
                 name = "example-task"
                 resources {

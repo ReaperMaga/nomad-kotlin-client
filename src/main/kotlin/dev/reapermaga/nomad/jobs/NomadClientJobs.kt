@@ -1,7 +1,7 @@
 package dev.reapermaga.nomad.jobs
 
 import dev.reapermaga.nomad.NomadClient
-import dev.reapermaga.nomad.allocations.NomadAllocation
+import dev.reapermaga.nomad.allocations.data.NomadAllocation
 import dev.reapermaga.nomad.jobs.data.NomadCreateJobResponse
 import dev.reapermaga.nomad.jobs.data.NomadJob
 import dev.reapermaga.nomad.jobs.data.NomadStopJob
