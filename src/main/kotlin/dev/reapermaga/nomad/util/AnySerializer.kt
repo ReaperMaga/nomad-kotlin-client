@@ -13,6 +13,7 @@ object AnySerializer : KSerializer<Any> {
     override fun serialize(encoder: Encoder, value: Any) {
         when (value) {
             is String -> encoder.encodeString(value)
+            is Boolean -> encoder.encodeBoolean(value)
             is List<*> -> {
                 val list = value.toList() as List<String>
                 val serializer = ListSerializer(String.serializer())
