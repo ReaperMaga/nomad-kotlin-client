@@ -1,9 +1,9 @@
 package dev.reapermaga.nomad.jobs
 
 import dev.reapermaga.nomad.NomadClient
+import dev.reapermaga.nomad.allocations.NomadAllocation
 import dev.reapermaga.nomad.jobs.data.NomadCreateJobResponse
 import dev.reapermaga.nomad.jobs.data.NomadJob
-import dev.reapermaga.nomad.jobs.data.NomadJobAllocation
 import dev.reapermaga.nomad.jobs.data.NomadStopJob
 import dev.reapermaga.nomad.jobs.dsl.NomadJobDsl
 
@@ -30,7 +30,7 @@ class NomadClientJobs(val client: NomadClient) {
         return client.requestDelete("/job/$jobId?purge=true")
     }
 
-    suspend fun listAllocations(jobId: String): List<NomadJobAllocation> {
+    suspend fun listAllocations(jobId: String): List<NomadAllocation> {
         return client.requestGet("/job/$jobId/allocations") ?: error("Failed to fetch job allocations")
     }
 }

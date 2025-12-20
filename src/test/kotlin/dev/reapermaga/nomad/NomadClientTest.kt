@@ -80,6 +80,7 @@ class NomadClientTest : StringSpec({
             allocations = client.jobs.listAllocations(createdJobId)
         }
         if (attempts > 0) {
+            println("Found allocations: $allocations")
             allocations.size shouldBe beGreaterThanOrEqualTo(1)
         }
     }
@@ -96,6 +97,29 @@ class NomadClientTest : StringSpec({
     "list nodes" {
         val nodes = client.nodes.list()
         nodes.size should beGreaterThan(0)
+    }
+    "list allocations" {
+        createExampleJob()
+        val allocations = client.allocations.list()
+        allocations.size should beGreaterThan(0)
+    }
+    "read allocation" {
+        val createdJobId = createExampleJob()
+        var allocations = client.jobs.listAllocations(createdJobId)
+        var attempts = 5
+        while ((allocations.isEmpty() || allocations.first().clientStatus == "pending") && attempts-- > 0) {
+            println("Waiting for allocation to be running...")
+            delay(1000)
+            allocations = client.jobs.listAllocations(createdJobId)
+        }
+        if (attempts > 0) {
+            val allocationId = allocations.first().id
+            val allocation = client.allocations.read(allocationId)
+            allocation.shouldNotBeNull()
+            println("Allocation: $allocation")
+        } else {
+            println("Allocation did not reach running state in time, skipping read allocation test.")
+        }
     }
 })
 

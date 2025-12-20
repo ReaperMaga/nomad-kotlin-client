@@ -1,5 +1,6 @@
 package dev.reapermaga.nomad
 
+import dev.reapermaga.nomad.allocations.NomadClientAllocations
 import dev.reapermaga.nomad.jobs.NomadClientJobs
 import dev.reapermaga.nomad.nodes.NomadClientNodes
 import dev.reapermaga.nomad.status.NomadClientStatus
@@ -26,6 +27,8 @@ class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
             ?: error("address can't be empty")
 
     val jobs = NomadClientJobs(this)
+
+    val allocations = NomadClientAllocations(this)
     val nodes = NomadClientNodes(this)
     val status = NomadClientStatus(this)
 
