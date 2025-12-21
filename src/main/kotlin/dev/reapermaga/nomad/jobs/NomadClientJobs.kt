@@ -13,11 +13,36 @@ class NomadClientJobs(val client: NomadClient) {
         return client.requestGet("/jobs") ?: error("Failed to fetch jobs")
     }
 
+    /**
+     * Creates a new Nomad job using the provided DSL.
+     *
+     * Following fields are required in the DSL:
+     * - Job ID (string)
+     * - Job Type (e.g., "service", "batch", etc.)
+     * - Datacenters (list of datacenter names)
+     * - At least one Task Group with at least one Task
+     *
+     * @param dsl A lambda function that defines the job configuration using NomadJobDsl.
+     * @return A NomadCreateJobResponse containing details about the created job.
+     */
     suspend fun create(dsl: NomadJobDsl.() -> Unit): NomadCreateJobResponse {
         val jobCreateRequest = NomadJobDsl().apply(dsl).build()
         return client.requestPost("/jobs", jobCreateRequest)
     }
 
+    /**
+     * Updates an existing Nomad job identified by jobId using the provided DSL.
+     *
+     * Following fields are required in the DSL:
+     * - Job ID (string)
+     * - Job Type (e.g., "service", "batch", etc.)
+     * - Datacenters (list of datacenter names)
+     * - At least one Task Group with at least one Task
+     *
+     * @param jobId The ID of the job to update.
+     * @param dsl A lambda function that defines the updated job configuration using NomadJobDsl.
+     * @return A NomadCreateJobResponse containing details about the updated job.
+     */
     suspend fun update(jobId: String, dsl: NomadJobDsl.() -> Unit): NomadCreateJobResponse {
         val jobCreateRequest = NomadJobDsl().apply(dsl).build()
         return client.requestPost("/job/$jobId", jobCreateRequest)
