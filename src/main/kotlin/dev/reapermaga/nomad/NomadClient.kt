@@ -60,7 +60,7 @@ class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
             .build()
         httpClient.newCall(request).executeAsync().use {
             if (!it.isSuccessful) {
-                error("Request failed with status code ${it.code}: ${it.message}")
+                error("Request failed with status code ${it.code}: ${it.message}: ${it.body.string()}")
             }
             return json.decodeFromString(it.body.string())
         }

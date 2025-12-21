@@ -18,6 +18,11 @@ class NomadClientJobs(val client: NomadClient) {
         return client.requestPost("/jobs", jobCreateRequest)
     }
 
+    suspend fun update(jobId: String, dsl: NomadJobDsl.() -> Unit): NomadCreateJobResponse {
+        val jobCreateRequest = NomadJobDsl().apply(dsl).build()
+        return client.requestPost("/job/$jobId", jobCreateRequest)
+    }
+
     suspend fun read(jobId: String): NomadJob? {
         return client.requestGet("/job/$jobId")
     }

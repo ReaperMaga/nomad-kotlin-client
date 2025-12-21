@@ -12,14 +12,14 @@ import java.util.*
 class NomadJobDsl {
 
     var id: String = UUID.randomUUID().toString()
-    var type = "service"
-    var datacenters = listOf<String>()
+    var type: String? = null
+    var datacenters: List<String>? = null
 
     var meta: NomadJobMetaDsl? = null
-    private var taskGroups: List<NomadJobTaskGroupDsl> = listOf()
+    private var taskGroups: MutableList<NomadJobTaskGroupDsl> = mutableListOf()
 
     fun groups(groups: List<NomadJobTaskGroupDsl>) {
-        this.taskGroups = groups
+        this.taskGroups = groups.toMutableList()
     }
 
     fun meta(dsl: NomadJobMetaDsl.() -> Unit) {
@@ -27,8 +27,7 @@ class NomadJobDsl {
     }
 
     fun group(dsl: NomadJobTaskGroupDsl.() -> Unit) {
-        val group = NomadJobTaskGroupDsl().apply(dsl)
-        this.taskGroups += group
+        this.taskGroups.add(NomadJobTaskGroupDsl().apply(dsl))
     }
 
     fun build(): NomadCreateJobRequest {

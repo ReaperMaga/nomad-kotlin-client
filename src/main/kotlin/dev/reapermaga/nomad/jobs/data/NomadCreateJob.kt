@@ -14,10 +14,10 @@ data class NomadCreateJobRequest(
 @Serializable
 data class NomadCreateJob(
     @SerialName("ID") val id: String,
-    @SerialName("Type") val type: String,
-    @SerialName("Datacenters") val datacenters: List<String>,
+    @SerialName("Type") val type: String? = null,
+    @SerialName("Datacenters") val datacenters: List<String>? = null,
     @SerialName("Meta") val meta: Map<String, String>? = null,
-    @SerialName("TaskGroups") val taskGroups: List<NomadCreateJobTaskGroup>,
+    @SerialName("TaskGroups") val taskGroups: List<NomadCreateJobTaskGroup>? = null,
 )
 
 
