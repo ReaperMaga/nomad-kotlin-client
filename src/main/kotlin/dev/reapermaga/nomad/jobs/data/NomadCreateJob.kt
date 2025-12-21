@@ -16,6 +16,7 @@ data class NomadCreateJob(
     @SerialName("ID") val id: String,
     @SerialName("Type") val type: String,
     @SerialName("Datacenters") val datacenters: List<String>,
+    @SerialName("Meta") val meta: Map<String, String>? = null,
     @SerialName("TaskGroups") val taskGroups: List<NomadCreateJobTaskGroup>,
 )
 

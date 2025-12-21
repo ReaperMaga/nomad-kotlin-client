@@ -20,11 +20,18 @@ class NomadClient(initConfig: NomadClientConfig.() -> Unit = {}) {
         ignoreUnknownKeys = true
     }
 
-    val httpClient = OkHttpClient.Builder().build()
+    val httpClient = OkHttpClient.Builder()
+        .addInterceptor {
+            val request = it.request().newBuilder()
+            config.token?.let { token ->
+                request.addHeader("X-Nomad-Token", token)
+            }
+            it.proceed(request.build())
+        }
+        .build()
 
     val baseUrl: String
         get() = config.address.trimEnd('/').plus("/${config.clientVersion.name.lowercase()}")
-            ?: error("address can't be empty")
 
     val jobs = NomadClientJobs(this)
 

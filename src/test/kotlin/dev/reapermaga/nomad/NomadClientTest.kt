@@ -35,6 +35,9 @@ class NomadClientTest : StringSpec({
             datacenters = listOf("dc1")
             group {
                 name = "example-group"
+                meta {
+                    put("example-meta-key", "example-meta-value")
+                }
                 network {
                     dynamicPort {
                         label = "redis"
@@ -128,6 +131,9 @@ private suspend fun createExampleJob(jobId: String = UUID.randomUUID().toString(
         id = jobId
         type = "batch"
         datacenters = listOf("dc1")
+        meta {
+            put("example-meta-key", "example-meta-value")
+        }
         group {
             name = "example-group"
             network {

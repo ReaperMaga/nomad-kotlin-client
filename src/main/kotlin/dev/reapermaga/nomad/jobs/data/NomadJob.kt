@@ -23,6 +23,8 @@ data class NomadJob(
     val statusDescription: String,
     @SerialName("TaskGroups")
     val taskGroups: List<NomadJobTaskGroup>? = null,
+    @SerialName("Meta")
+    val meta: Map<String, String>? = null,
 )
 
 @Serializable
