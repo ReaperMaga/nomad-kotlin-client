@@ -126,4 +126,4 @@ This library is currently pre-1.0. Expect minor breaking changes as APIs evolve.
 
 ## License
 
-TBD (add your project license here).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
