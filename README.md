@@ -120,10 +120,6 @@ See `src/test/kotlin/.../NomadClientTest.kt` for more examples: reading a job, p
 - Serialization: uses `kotlinx-serialization-json` with `ignoreUnknownKeys = true`.
 - HTTP: uses OkHttp 5.x. Network calls will throw if the response is not successful (non-2xx) except for 404 on certain read endpoints, which return `null`.
 
-## Versioning
-
-This library is currently pre-1.0. Expect minor breaking changes as APIs evolve. Latest version at the time of writing: `0.1.0`.
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
